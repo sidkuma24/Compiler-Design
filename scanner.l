@@ -1,114 +1,150 @@
+
+
 %{
-	#include<stdio.h>
-	#include<string.h>
+/**
+ * Siddharth Kumar <kumar.siddharth450@gmail.com>
+ * 6th semester compiler lab assignment
+ *
+ * scanner.l, input file for flex.
+**/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "parser.tab.h"
+
 %}
 
- 
-delim [ \t\n]
-ws {delim}+
-letter [a-zA-Z]
-digit [0-9]
-number {digit}+
-alpha [a-zA-Z0-9_]
+D			[0-9]
+L			[a-zA-Z_]
+H			[a-fA-F0-9]
+E			[Ee][+-]?{D}+
+FS			(f|F|l|L)
+IS			(u|U|l|L)*
+
+%%
+"/*"			{ comment(); }
+
+"auto"			{ return(AUTO); }
+"break"			{ return(BREAK); }
+"case"			{ return(CASE); }
+"char"			{ return(CHAR); }
+"const"			{ return(CONST); }
+"continue"		{ return(CONTINUE); }
+"default"		{ return(DEFAULT); }
+"do"			{ return(DO); }
+"double"		{ return(DOUBLE); }
+"else"			{ return(ELSE); }
+"enum"			{ return(ENUM); }
+"extern"		{ return(EXTERN); }
+"float"			{ return(FLOAT); }
+"for"			{ return(FOR); }
+"goto"			{ return(GOTO); }
+"if"			{ return(IF); }
+"int"			{ return(INT); }
+"long"			{ return(LONG); }
+"register"		{ return(REGISTER); }
+"return"		{ return(RETURN); }
+"short"			{ return(SHORT); }
+"signed"		{ return(SIGNED); }
+"sizeof"		{ return(SIZEOF); }
+"static"		{ return(STATIC); }
+"struct"		{ return(STRUCT); }
+"switch"		{ return(SWITCH); }
+"typedef"		{ return(TYPEDEF); }
+"union"			{ return(UNION); }
+"unsigned"		{ return(UNSIGNED); }
+"void"			{ return(VOID); }
+"volatile"		{ return(VOLATILE); }
+"while"			{ return(WHILE); }
+
+{L}({L}|{D})*		{ yylval.in = (char*)strdup(yytext);
+			  //printf("in lex %s\n",yylval.in);
+			  return(IDENTIFIER);}
+
+0[xX]{H}+{IS}?		{ return(CONSTANT); }
+0{D}+{IS}?		{ return(CONSTANT); }
+{D}+{IS}?		{ return(CONSTANT); }
+L?'(\\.|[^\\'])+'	{ return(CONSTANT); }
+
+{D}+{E}{FS}?		{ return(CONSTANT); }
+{D}*"."{D}+({E})?{FS}?	{ return(CONSTANT); }
+{D}+"."{D}*({E})?{FS}?	{ return(CONSTANT); }
+
+L?\"(\\.|[^\\"])*\"	{ return(STRING_LITERAL); }
+
+"..."			{ return(ELLIPSIS); }
+">>="			{ return(RIGHT_ASSIGN); }
+"<<="			{ return(LEFT_ASSIGN); }
+"+="			{ return(ADD_ASSIGN); }
+"-="			{ return(SUB_ASSIGN); }
+"*="			{ return(MUL_ASSIGN); }
+"/="			{ return(DIV_ASSIGN); }
+"%="			{ return(MOD_ASSIGN); }
+"&="			{ return(AND_ASSIGN); }
+"^="			{ return(XOR_ASSIGN); }
+"|="			{ return(OR_ASSIGN); }
+">>"			{ return(RIGHT_OP); }
+"<<"			{ return(LEFT_OP); }
+"++"			{ return(INC_OP); }
+"--"			{ return(DEC_OP); }
+"->"			{ return(PTR_OP); }
+"&&"			{ return(AND_OP); }
+"||"			{ return(OR_OP); }
+"<="			{ return(LE_OP); }
+">="			{ return(GE_OP); }
+"=="			{ return(EQ_OP); }
+"!="			{ return(NE_OP); }
+";"				{ return(';'); }
+("{"|"<%")		{ return('{'); }
+("}"|"%>")		{ return('}'); }
+","				{ return(','); }
+":"				{ return(':'); }
+"="				{ return('='); }
+"("				{ return('('); }
+")"				{ return(')'); }
+("["|"<:")		{ return('['); }
+("]"|":>")		{ return(']'); }
+"."				{ return('.'); }
+"&"				{ return('&'); }
+"!"				{ return('!'); }
+"~"				{ return('~'); }
+"-"				{ return('-'); }
+"+"				{ return('+'); }
+"*"				{ return('*'); }
+"/"				{ return('/'); }
+"%"				{ return('%'); }
+"<"				{ return('<'); }
+">"				{ return('>'); }
+"^"				{ return('^'); }
+"|"				{ return('|'); }
+"?"				{ return('?'); }
+
+[ \t\v\n\f]		{  }
+.			{ /* ignore bad characters */ }
 
 %%
 
-{ws} ;
-
-if	printf("IF");
-else	printf("ELSE");
-while	printf("WHILE");
-for	printf("FOR");
-break	printf("BREAK");
-continue	printf("CONTINUE");
-return	printf("RETURN");
-auto	printf("AUTO");
-case	printf("CASE");
-char	{printf("CHAR");strcpy(type,"char");}
-const	printf("CONST");
-default	printf("DEFAULT");
-do	{printf("DO");strcpy(type,"do");}
-double	{printf("DOUBLE");strcpy(type,"double");}
-enum	{printf("ENUM");}
-extern	{printf("EXTERN");}
-float	{printf("FLOAT");strcpy(type,"float");}
-goto	{printf("GOTO");}
-int	{printf("INT");strcpy(type,"int");}
-long	{printf("LONG");strcpy(type,"long");}
-register	{printf("REGISTER");}
-short	{printf("SHORT");}
-signed	{printf("SIGNED");}
-sizeof	{printf("SIZEOF");}
-static	{printf("STATIC");}
-struct	{printf("STRUCT");}
-switch	{printf("SWITCH");}
-typedef	{printf("TYPEDEF");}
-union	{printf("UNION");}
-unsigned	{printf("UNSIGNED");}
-void	{printf("VOID");}
-volatile	{printf("VOLATILE");}
-contents	{display();}
-
-"<" {printf("LT");}
-"<=" {printf("LE");}
-">" {printf("GT");}
-">=" {printf("GE");}
-"==" {printf("EQ");}
-"!=" {printf("NE");}
-"!"	{printf("NOT");}
-"=" {printf("ASSIGNED_TO");}
-"+=" {printf("PLUS_EQ");}
-"-=" {printf("MINUS_EQ");}
-"*=" {printf("MULT_EQ");}
-"/=" {printf("DIV_EQ");}
-"%=" {printf("MOD_EQ");}
-
-"+" printf("PLUS");
-"-" printf("MINUS");
-"*" printf("MULT");
-"/" printf("DIV");
-"%" printf("MOD");
-";" printf("<;>");
-"," printf("<,>");
-"(" printf("<(>");
-")" printf("<)>");
-"[" printf("<[>");
-"]" printf("<]>");
-
-
-{letter}{alpha}* {yylval.id = (char)* strdup(yytext);
-                  return (ID);}
-
-{number} { return (NUMBER);}
-
-%%
-
-
-
-main()
+int yywrap(void)
 {
-	FILE *f=NULL;
-	f=fopen("./commands.txt","r");
-	yyin=f;
-	yylex();
-}
-
-			
-				
-yywrap()
-{
-
+	return 1;
+	/*Return 1 if you are done or 0 if more processing is required.*/
 }
 
 
+comment()
+{
+	char c, c1;
 
+loop:
+	while ((c = input()) != '*' && c != 0)
+		putchar(c);
 
+	if ((c1 = input()) != '/' && c != 0)
+	{
+		unput(c1);
+		goto loop;
+	}
 
-
-
-
-
-
-
-
-
+	if (c != 0)
+		putchar(c1);
+}
