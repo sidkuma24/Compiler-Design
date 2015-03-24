@@ -1,4 +1,3 @@
--=
 
 
 parser: scanner.l parser.y
