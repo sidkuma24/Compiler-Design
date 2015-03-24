@@ -1,0 +1,7 @@
+***************SYMBOL-TABLE***************
+97. a int 97 0x60ade0
+98. b int 98 0x60ae00
+99. c int 99 0x60ae20
+120. x float 120 0x60b0c0
+121. y float 121 0x60b0e0
+122. z float 122 0x60b100

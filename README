@@ -1,0 +1,5 @@
+Build the program:
+ cwd $>make
+
+running the program:
+$>./parser <source file>
