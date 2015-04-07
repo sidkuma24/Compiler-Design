@@ -1,4 +1,4 @@
-Status : Done till 3-address imtermediate code generation
+Status : Done till 3-address intermediate code generation
 
 build: (compile)
 .../src/$> make all 
