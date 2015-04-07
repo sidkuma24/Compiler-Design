@@ -1,0 +1,7 @@
+Status : Done till 3-address imtermediate code generation
+
+build: (compile)
+.../src/$> make all 
+
+run:
+$>./mycc [test file name]

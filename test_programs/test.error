@@ -1,0 +1,7 @@
+int p,q;
+float abc;
+char abc;
+
+p = p+q/2;
+
+lhs = p + q;
